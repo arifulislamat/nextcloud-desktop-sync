@@ -20,6 +20,9 @@
 #include "owncloudgui.h"
 
 #include "wizard/owncloudwizard.h"
+#ifdef WITH_PROVIDERS
+#include "wizard/welcomepage.h"
+#endif // WITH_PROVIDERS
 #include "wizard/owncloudsetuppage.h"
 #include "wizard/owncloudhttpcredspage.h"
 #include "wizard/owncloudoauthcredspage.h"
@@ -46,17 +49,23 @@ Q_LOGGING_CATEGORY(lcWizard, "nextcloud.gui.wizard", QtInfoMsg)
 OwncloudWizard::OwncloudWizard(QWidget *parent)
     : QWizard(parent)
     , _account(nullptr)
+#ifdef WITH_PROVIDERS
+    , _welcomePage(new WelcomePage(this))
+#endif // WITH_PROVIDERS
     , _setupPage(new OwncloudSetupPage(this))
     , _httpCredsPage(new OwncloudHttpCredsPage(this))
     , _browserCredsPage(new OwncloudOAuthCredsPage)
     , _flow2CredsPage(new Flow2AuthCredsPage)
-    , _advancedSetupPage(new OwncloudAdvancedSetupPage)
+    , _advancedSetupPage(new OwncloudAdvancedSetupPage(this))
     , _resultPage(new OwncloudWizardResultPage)
     , _webViewPage(new WebViewPage(this))
 {
     setObjectName("owncloudWizard");
 
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#ifdef WITH_PROVIDERS
+    setPage(WizardCommon::Page_Welcome, _welcomePage);
+#endif // WITH_PROVIDERS
     setPage(WizardCommon::Page_ServerSetup, _setupPage);
     setPage(WizardCommon::Page_HttpCreds, _httpCredsPage);
     setPage(WizardCommon::Page_OAuthCreds, _browserCredsPage);
@@ -83,7 +92,7 @@ OwncloudWizard::OwncloudWizard(QWidget *parent)
 
 
     Theme *theme = Theme::instance();
-    setWindowTitle(tr("%1 Connection Wizard").arg(theme->appNameGUI()));
+    setWindowTitle(tr("Add %1 account").arg(theme->appNameGUI()));
     setWizardStyle(QWizard::ModernStyle);
     setPixmap(QWizard::BannerPixmap, theme->wizardHeaderBanner());
     setPixmap(QWizard::LogoPixmap, theme->wizardHeaderLogo());
@@ -94,7 +103,6 @@ OwncloudWizard::OwncloudWizard(QWidget *parent)
     setSubTitleFormat(Qt::RichText);
     setButtonText(QWizard::CustomButton1, tr("Skip folders configuration"));
 
-
     // Connect styleChanged events to our widgets, so they can adapt (Dark-/Light-Mode switching)
     connect(this, &OwncloudWizard::styleChanged, _setupPage, &OwncloudSetupPage::slotStyleChanged);
     connect(this, &OwncloudWizard::styleChanged, _advancedSetupPage, &OwncloudAdvancedSetupPage::slotStyleChanged);
@@ -104,6 +112,8 @@ OwncloudWizard::OwncloudWizard(QWidget *parent)
 
     // allow Flow2 page to poll on window activation
     connect(this, &OwncloudWizard::onActivate, _flow2CredsPage, &Flow2AuthCredsPage::slotPollNow);
+
+    resize(650, 450);
 }
 
 void OwncloudWizard::setAccount(AccountPtr account)
@@ -151,7 +161,6 @@ void OwncloudWizard::setRegistration(bool registration)
 {
     _registration = registration;
 }
-
 
 void OwncloudWizard::enableFinishOnResultWidget(bool enable)
 {
@@ -220,6 +229,34 @@ void OwncloudWizard::slotCurrentPageChanged(int id)
 {
     qCDebug(lcWizard) << "Current Wizard page changed to " << id;
 
+#ifdef WITH_PROVIDERS
+    if (id == WizardCommon::Page_Welcome) {
+        // Hide all buttons on welcome page
+        setButtonLayout({});
+    } else {
+        // Otherwise show back and next button
+        QList<QWizard::WizardButton> buttonLayout;
+        buttonLayout << QWizard::Stretch;
+
+        if (id == WizardCommon::Page_AdvancedSetup) {
+            buttonLayout << QWizard::CustomButton1;
+        }
+
+        buttonLayout << QWizard::BackButton << QWizard::NextButton;
+        setButtonLayout(buttonLayout);
+    }
+#else // WITH_PROVIDERS
+    QList<QWizard::WizardButton> buttonLayout;
+    buttonLayout << QWizard::Stretch;
+
+    if (id == WizardCommon::Page_AdvancedSetup) {
+        buttonLayout << QWizard::CustomButton1;
+    }
+
+    buttonLayout << QWizard::BackButton << QWizard::NextButton;
+    setButtonLayout(buttonLayout);
+#endif // WITH_PROVIDERS
+
     if (id == WizardCommon::Page_ServerSetup) {
         emit clearPendingRequests();
     }
@@ -232,7 +269,6 @@ void OwncloudWizard::slotCurrentPageChanged(int id)
         done(Accepted);
     }
 
-    setOption(QWizard::HaveCustomButton1, id == WizardCommon::Page_AdvancedSetup);
     if (id == WizardCommon::Page_AdvancedSetup && (_credentialsPage == _browserCredsPage || _credentialsPage == _flow2CredsPage)) {
         // For OAuth, disable the back button in the Page_AdvancedSetup because we don't want
         // to re-open the browser.
@@ -302,6 +338,20 @@ void OwncloudWizard::changeEvent(QEvent *e)
 void OwncloudWizard::customizeStyle()
 {
     // HINT: Customize wizard's own style here, if necessary in the future (Dark-/Light-Mode switching)
+    auto theme = Theme::instance();
+    auto wizardPalette = palette();
+
+    wizardPalette.setColor(QPalette::Window, theme->wizardHeaderBackgroundColor());
+    wizardPalette.setColor(QPalette::Base, theme->wizardHeaderBackgroundColor());
+    wizardPalette.setColor(QPalette::WindowText, theme->wizardHeaderTitleColor());
+    wizardPalette.setColor(QPalette::Text, theme->wizardHeaderTitleColor());
+    // Set separator color
+    wizardPalette.setColor(QPalette::Mid, theme->wizardHeaderBackgroundColor());
+
+    setPalette(wizardPalette);
+
+    WizardCommon::customizeSecondaryButtonStyle(button(QWizard::CustomButton1));
+    WizardCommon::customizeSecondaryButtonStyle(button(QWizard::BackButton));
 }
 
 void OwncloudWizard::bringToTop()

@@ -674,8 +674,9 @@ QString Theme::versionSwitchOutput() const
 bool Theme::isDarkColor(const QColor &color)
 {
     // account for different sensitivity of the human eye to certain colors
-    double treshold = 1.0 - (0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue()) / 255.0;
-    return treshold > 0.5;
+    // https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
+    const auto treshold = 0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue();
+    return treshold > 186;
 }
 
 QColor Theme::getBackgroundAwareLinkColor(const QColor &backgroundColor)

@@ -16,6 +16,10 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QVariant>
+#include <QRadioButton>
+#include <QAbstractButton>
+#include <QCheckBox>
+#include <QSpinBox>
 
 #include "wizard/owncloudwizardcommon.h"
 #include "theme.h"
@@ -66,6 +70,39 @@ namespace WizardCommon {
         sizePolicy.setRetainSizeWhenHidden(true);
         errorLabel->setSizePolicy(sizePolicy);
         errorLabel->setVisible(false);
+    }
+
+    void customizeRadioButtonStyle(QRadioButton *radioButton)
+    {
+        auto radioButtonPalette = radioButton->palette();
+        radioButtonPalette.setColor(QPalette::Text, Qt::black);
+        radioButtonPalette.setColor(QPalette::Base, Qt::white);
+        radioButton->setPalette(radioButtonPalette);
+    }
+
+    void customizeSpinBoxStyle(QSpinBox *spinBox)
+    {
+        auto spinBoxPalette = spinBox->palette();
+        spinBoxPalette.setColor(QPalette::Base, Qt::white);
+        spinBoxPalette.setColor(QPalette::WindowText, Qt::black);
+        spinBoxPalette.setColor(QPalette::Text, Qt::black);
+        spinBox->setPalette(spinBoxPalette);
+    }
+
+    void customizeCheckBoxStyle(QCheckBox *checkBox)
+    {
+        auto checkBoxPalette = checkBox->palette();
+        checkBoxPalette.setColor(QPalette::Text, Qt::black);
+        checkBoxPalette.setColor(QPalette::Base, Qt::white);
+        checkBox->setPalette(checkBoxPalette);
+    }
+
+    void customizeSecondaryButtonStyle(QAbstractButton *button)
+    {
+        auto pushButtonPalette = button->palette();
+        pushButtonPalette.setColor(QPalette::Button, Theme::instance()->wizardHeaderBackgroundColor());
+        pushButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->wizardHeaderTitleColor());
+        button->setPalette(pushButtonPalette);
     }
 
 } // ns WizardCommon

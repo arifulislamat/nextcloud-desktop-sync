@@ -17,6 +17,7 @@
 #include "common/utility.h"
 #include "account.h"
 #include "wizard/owncloudwizardcommon.h"
+#include "theme.h"
 
 #include "QProgressIndicator.h"
 
@@ -34,13 +35,19 @@ Flow2AuthWidget::Flow2AuthWidget(QWidget *parent)
     WizardCommon::initErrorLabel(_ui.errorLabel);
     _ui.errorLabel->setTextFormat(Qt::RichText);
 
-    connect(_ui.openLinkButton, &QCommandLinkButton::clicked, this, &Flow2AuthWidget::slotOpenBrowser);
-    connect(_ui.copyLinkButton, &QCommandLinkButton::clicked, this, &Flow2AuthWidget::slotCopyLinkToClipboard);
+    connect(_ui.openLinkButton, &QPushButton::clicked, this, &Flow2AuthWidget::slotOpenBrowser);
+    connect(_ui.copyLinkButton, &QPushButton::clicked, this, &Flow2AuthWidget::slotCopyLinkToClipboard);
 
     _ui.horizontalLayout->addWidget(_progressIndi);
     stopSpinner(false);
 
+    setLogo();
     customizeStyle();
+}
+
+void Flow2AuthWidget::setLogo()
+{
+    _ui.logoLabel->setPixmap(Theme::hidpiFileName(":/client/theme/white/external.png"));
 }
 
 void Flow2AuthWidget::startAuth(Account *account)
@@ -188,7 +195,10 @@ void Flow2AuthWidget::slotStyleChanged()
 void Flow2AuthWidget::customizeStyle()
 {
     if(_progressIndi)
-        _progressIndi->setColor(QGuiApplication::palette().color(QPalette::Text));
+        _progressIndi->setColor(Qt::white);
+
+    WizardCommon::customizeSecondaryButtonStyle(_ui.openLinkButton);
+    WizardCommon::customizeSecondaryButtonStyle(_ui.copyLinkButton);
 }
 
 } // namespace OCC

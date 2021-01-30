@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QStorageInfo>
 #include <QMessageBox>
+#include <QJsonObject>
 
 #include "QProgressIndicator.h"
 
@@ -32,18 +33,16 @@
 #include <folderman.h>
 #include "creds/abstractcredentials.h"
 #include "networkjobs.h"
+#include "wizard/owncloudwizard.h"
 
 namespace OCC {
 
-OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage()
+OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage(OwncloudWizard *wizard)
     : QWizardPage()
     , _progressIndi(new QProgressIndicator(this))
+    , _ocWizard(wizard)
 {
     _ui.setupUi(this);
-
-    Theme *theme = Theme::instance();
-    setTitle(WizardCommon::titleTemplate().arg(tr("Connect to %1").arg(theme->appNameGUI())));
-    setSubTitle(WizardCommon::subTitleTemplate().arg(tr("Setup local folder options")));
 
     registerField(QLatin1String("OCSyncFromScratch"), _ui.cbSyncFromScratch);
 
@@ -65,13 +64,10 @@ OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage()
     });
     connect(_ui.bSelectiveSync, &QAbstractButton::clicked, this, &OwncloudAdvancedSetupPage::slotSelectiveSyncClicked);
 
+    const auto theme = Theme::instance();
     QIcon appIcon = theme->applicationIcon();
-    _ui.lServerIcon->setText(QString());
     _ui.lServerIcon->setPixmap(appIcon.pixmap(48));
-    _ui.lLocalIcon->setText(QString());
-    
-    // TO DO: File doesn't exist anymore - unneccessary or replacement needed?
-    _ui.lLocalIcon->setPixmap(QPixmap(Theme::hidpiFileName(":/client/theme/folder-sync.png")));
+    _ui.lLocal->setPixmap(QPixmap(":/client/theme/white/folder-64.png"));
 
     if (theme->wizardHideExternalStorageConfirmationCheckbox()) {
         _ui.confCheckBoxExternal->hide();
@@ -106,6 +102,19 @@ void OwncloudAdvancedSetupPage::setupCustomization()
 
     variant = theme->customMedia(Theme::oCSetupBottom);
     WizardCommon::setupCustomMedia(variant, _ui.bottomLabel);
+
+    WizardCommon::customizeSpinBoxStyle(_ui.confSpinBox);
+
+    WizardCommon::customizeRadioButtonStyle(_ui.rSyncEverything);
+    WizardCommon::customizeRadioButtonStyle(_ui.rSelectiveSync);
+    WizardCommon::customizeRadioButtonStyle(_ui.rKeepLocal);
+    WizardCommon::customizeRadioButtonStyle(_ui.cbSyncFromScratch);
+    WizardCommon::customizeRadioButtonStyle(_ui.rVirtualFileSync);
+
+    WizardCommon::customizeCheckBoxStyle(_ui.confCheckBoxSize);
+    WizardCommon::customizeCheckBoxStyle(_ui.confCheckBoxExternal);
+
+    WizardCommon::customizeSecondaryButtonStyle(_ui.bSelectiveSync);
 }
 
 bool OwncloudAdvancedSetupPage::isComplete() const
@@ -158,6 +167,44 @@ void OwncloudAdvancedSetupPage::initializePage()
     _ui.confCheckBoxSize->setChecked(newFolderLimit.first);
     _ui.confSpinBox->setValue(newFolderLimit.second);
     _ui.confCheckBoxExternal->setChecked(cfgFile.confirmExternalStorage());
+
+    auto account = _ocWizard->account();
+    auto avatarJob = new AvatarJob(account, account->davUser(), 64, this);
+    avatarJob->setTimeout(20 * 1000);
+    QObject::connect(avatarJob, &AvatarJob::avatarPixmap, this, [this](const QImage &avatarImage) {
+        if (avatarImage.isNull()) {
+            return;
+        }
+        auto avatarPixmap = QPixmap::fromImage(AvatarJob::makeCircularAvatar(avatarImage));
+        _ui.lServerIcon->setPixmap(avatarPixmap);
+    });
+    avatarJob->start();
+
+    // Fetch user data
+    auto userJob = new JsonApiJob(account, QLatin1String("ocs/v1.php/cloud/user"), this);
+    userJob->setTimeout(20 * 1000);
+    connect(userJob, &JsonApiJob::jsonReceived, this, [this](const QJsonDocument &json) {
+        auto objData = json.object().value("ocs").toObject().value("data").toObject();
+        const auto displayName = objData.value("display-name").toString();
+        _ui.userNameLabel->setText(displayName);
+    });
+    userJob->start();
+
+    const auto serverUrl = account->url().toString();
+    setServerAddressLabelUrl(serverUrl);
+    const auto userName = account->davDisplayName();
+    _ui.userNameLabel->setText(userName);
+}
+
+void OwncloudAdvancedSetupPage::setServerAddressLabelUrl(QString url)
+{
+    const QString httpsPrefix("https://");
+    url.replace(url.indexOf(httpsPrefix), httpsPrefix.size(), "");
+
+    const QString httpPrefix("http://");
+    url.replace(url.indexOf(httpPrefix), httpPrefix.size(), "");
+
+    _ui.serverAddressLabel->setText(url);
 }
 
 // Called if the user changes the user- or url field. Adjust the texts and
@@ -172,7 +219,8 @@ void OwncloudAdvancedSetupPage::updateStatus()
 
     QString t;
 
-    _ui.pbSelectLocalFolder->setText(QDir::toNativeSeparators(locFolder));
+    prettifyLocalFolderPath(locFolder);
+
     if (dataChanged()) {
         if (_remoteFolder.isEmpty() || _remoteFolder == QLatin1String("/")) {
             t = "";
@@ -185,8 +233,7 @@ void OwncloudAdvancedSetupPage::updateStatus()
 
         const bool dirNotEmpty(QDir(locFolder).entryList(QDir::AllEntries | QDir::NoDotAndDotDot).count() > 0);
         if (dirNotEmpty) {
-            t += tr("<p><small><strong>Warning:</strong> The local folder is not empty. "
-                    "Pick a resolution!</small></p>");
+            t += tr("Warning: The local folder is not empty. Pick a resolution!");
         }
         _ui.resolutionWidget->setVisible(dirNotEmpty);
     } else {
@@ -194,11 +241,10 @@ void OwncloudAdvancedSetupPage::updateStatus()
     }
 
     QString lfreeSpaceStr = Utility::octetsToString(availableLocalSpace());
-    _ui.lFreeSpace->setText(QString(tr("Free space: %1")).arg(lfreeSpaceStr));
+    _ui.lFreeSpace->setText(QString(tr("%1 free space")).arg(lfreeSpaceStr));
 
     _ui.syncModeLabel->setText(t);
     _ui.syncModeLabel->setFixedHeight(_ui.syncModeLabel->sizeHint().height());
-    wizard()->resize(wizard()->sizeHint());
 
     qint64 rSpace = _ui.rSyncEverything->isChecked() ? _rSize : _rSelectedSize;
 
@@ -334,7 +380,7 @@ void OwncloudAdvancedSetupPage::slotSelectFolder()
 {
     QString dir = QFileDialog::getExistingDirectory(nullptr, tr("Local Sync Folder"), QDir::homePath());
     if (!dir.isEmpty()) {
-        _ui.pbSelectLocalFolder->setText(dir);
+        prettifyLocalFolderPath(dir);
         wizard()->setProperty("localFolder", dir);
         updateStatus();
     }
@@ -342,6 +388,17 @@ void OwncloudAdvancedSetupPage::slotSelectFolder()
     qint64 rSpace = _ui.rSyncEverything->isChecked() ? _rSize : _rSelectedSize;
     QString errorStr = checkLocalSpace(rSpace);
     setErrorString(errorStr);
+}
+
+
+void OwncloudAdvancedSetupPage::prettifyLocalFolderPath(QString path)
+{
+    auto prettyPath = path;
+
+    QString homeDir = QDir::homePath() + QString("/");
+    prettyPath.replace(prettyPath.indexOf(homeDir), homeDir.size(), "");
+
+    _ui.pbSelectLocalFolder->setText(QDir::toNativeSeparators(prettyPath));
 }
 
 void OwncloudAdvancedSetupPage::slotSelectiveSyncClicked()
