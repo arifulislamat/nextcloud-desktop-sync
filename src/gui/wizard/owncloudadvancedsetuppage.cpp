@@ -196,15 +196,17 @@ void OwncloudAdvancedSetupPage::initializePage()
     _ui.userNameLabel->setText(userName);
 }
 
-void OwncloudAdvancedSetupPage::setServerAddressLabelUrl(QString url)
+void OwncloudAdvancedSetupPage::setServerAddressLabelUrl(const QString &url)
 {
+    auto prettyUrl = url;
+
     const QString httpsPrefix("https://");
-    url.replace(url.indexOf(httpsPrefix), httpsPrefix.size(), "");
+    prettyUrl.replace(url.indexOf(httpsPrefix), httpsPrefix.size(), "");
 
     const QString httpPrefix("http://");
-    url.replace(url.indexOf(httpPrefix), httpPrefix.size(), "");
+    prettyUrl.replace(url.indexOf(httpPrefix), httpPrefix.size(), "");
 
-    _ui.serverAddressLabel->setText(url);
+    _ui.serverAddressLabel->setText(prettyUrl);
 }
 
 // Called if the user changes the user- or url field. Adjust the texts and
@@ -219,7 +221,7 @@ void OwncloudAdvancedSetupPage::updateStatus()
 
     QString t;
 
-    prettifyLocalFolderPath(locFolder);
+    setLocalFolderPushButtonPath(locFolder);
 
     if (dataChanged()) {
         if (_remoteFolder.isEmpty() || _remoteFolder == QLatin1String("/")) {
@@ -380,7 +382,7 @@ void OwncloudAdvancedSetupPage::slotSelectFolder()
 {
     QString dir = QFileDialog::getExistingDirectory(nullptr, tr("Local Sync Folder"), QDir::homePath());
     if (!dir.isEmpty()) {
-        prettifyLocalFolderPath(dir);
+        setLocalFolderPushButtonPath(dir);
         wizard()->setProperty("localFolder", dir);
         updateStatus();
     }
@@ -391,11 +393,11 @@ void OwncloudAdvancedSetupPage::slotSelectFolder()
 }
 
 
-void OwncloudAdvancedSetupPage::prettifyLocalFolderPath(QString path)
+void OwncloudAdvancedSetupPage::setLocalFolderPushButtonPath(const QString &path)
 {
     auto prettyPath = path;
 
-    QString homeDir = QDir::homePath() + QString("/");
+    const QString homeDir = QDir::homePath() + QString("/");
     prettyPath.replace(prettyPath.indexOf(homeDir), homeDir.size(), "");
 
     _ui.pbSelectLocalFolder->setText(QDir::toNativeSeparators(prettyPath));

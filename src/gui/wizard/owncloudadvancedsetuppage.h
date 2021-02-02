@@ -74,8 +74,8 @@ private:
     qint64 availableLocalSpace() const;
     QString checkLocalSpace(qint64 remoteSize) const;
     void customizeStyle();
-    void setServerAddressLabelUrl(QString url);
-    void prettifyLocalFolderPath(QString path);
+    void setServerAddressLabelUrl(const QString &url);
+    void setLocalFolderPushButtonPath(const QString &path);
 
     Ui_OwncloudAdvancedSetupPage _ui;
     bool _checking = false;
