@@ -8,9 +8,9 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
-   height="256"
+   height="128"
    width="256"
-   viewBox="0 0 256 256"
+   viewBox="0 0 256 128"
    id="svg10"
    sodipodi:docname="wizard-nextcloud.svg"
    inkscape:export-filename="/home/felix/workspace/work/nextcloud-desktop/theme/white/wizard-nextcloud.png"
@@ -40,23 +40,23 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1716"
-     inkscape:window-height="1327"
+     inkscape:window-width="3436"
+     inkscape:window-height="1393"
      id="namedview12"
      showgrid="false"
      inkscape:zoom="5.0976562"
      inkscape:cx="128"
      inkscape:cy="103.23372"
      inkscape:window-x="0"
-     inkscape:window-y="88"
+     inkscape:window-y="22"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg10" />
+     inkscape:current-layer="svg10"
+     inkscape:document-rotation="0" />
   <g
      stroke="#ffffff"
      stroke-width="22"
      fill="none"
-     id="g8"
-     transform="translate(0,64)">
+     id="g8">
     <circle
        cy="64"
        cx="40"

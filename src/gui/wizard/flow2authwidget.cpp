@@ -199,6 +199,8 @@ void Flow2AuthWidget::customizeStyle()
 
     WizardCommon::customizeSecondaryButtonStyle(_ui.openLinkButton);
     WizardCommon::customizeSecondaryButtonStyle(_ui.copyLinkButton);
+
+    WizardCommon::customizeHintLabel(_ui.statusLabel);
 }
 
 } // namespace OCC

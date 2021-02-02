@@ -360,11 +360,7 @@ void OwncloudSetupPage::customizeStyle()
     if (_progressIndi)
         _progressIndi->setColor(Qt::white);
 
-    QColor serverAddressDescriptionLabelTextColor(Qt::white);
-    serverAddressDescriptionLabelTextColor.setAlpha(128);
-    auto serverAddressDescriptionLabelPalette = _ui.serverAddressDescriptionLabel->palette();
-    serverAddressDescriptionLabelPalette.setColor(QPalette::Text, serverAddressDescriptionLabelTextColor);
-    _ui.serverAddressDescriptionLabel->setPalette(serverAddressDescriptionLabelPalette);
+    WizardCommon::customizeHintLabel(_ui.serverAddressDescriptionLabel);
 }
 
 } // namespace OCC

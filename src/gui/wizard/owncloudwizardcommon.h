@@ -35,6 +35,7 @@ namespace WizardCommon {
     void customizeSpinBoxStyle(QSpinBox *spinBox);
     void customizeCheckBoxStyle(QCheckBox *checkBox);
     void customizeSecondaryButtonStyle(QAbstractButton *button);
+    void customizeHintLabel(QLabel *label);
 
     enum SyncMode {
         SelectiveMode,

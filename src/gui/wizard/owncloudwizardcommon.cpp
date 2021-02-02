@@ -105,6 +105,16 @@ namespace WizardCommon {
         button->setPalette(pushButtonPalette);
     }
 
+    void customizeHintLabel(QLabel *label)
+    {
+        QColor textColor(Qt::white);
+        textColor.setAlpha(128);
+
+        auto palette = label->palette();
+        palette.setColor(QPalette::Text, textColor);
+        label->setPalette(palette);
+    }
+
 } // ns WizardCommon
 
 } // namespace OCC
