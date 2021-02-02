@@ -66,13 +66,13 @@ OwncloudWizard::OwncloudWizard(QWidget *parent)
 #ifdef WITH_PROVIDERS
     setPage(WizardCommon::Page_Welcome, _welcomePage);
 #endif // WITH_PROVIDERS
-    setPage(WizardCommon::Page_ServerSetup, _setupPage);
-    setPage(WizardCommon::Page_HttpCreds, _httpCredsPage);
-    setPage(WizardCommon::Page_OAuthCreds, _browserCredsPage);
-    setPage(WizardCommon::Page_Flow2AuthCreds, _flow2CredsPage);
-    setPage(WizardCommon::Page_AdvancedSetup, _advancedSetupPage);
-    setPage(WizardCommon::Page_Result, _resultPage);
-    setPage(WizardCommon::Page_WebView, _webViewPage);
+    initWizardPage(_setupPage, WizardCommon::Page_ServerSetup);
+    initWizardPage(_httpCredsPage, WizardCommon::Page_HttpCreds);
+    initWizardPage(_browserCredsPage, WizardCommon::Page_OAuthCreds);
+    initWizardPage(_flow2CredsPage, WizardCommon::Page_Flow2AuthCreds);
+    initWizardPage(_advancedSetupPage, WizardCommon::Page_AdvancedSetup);
+    initWizardPage(_resultPage, WizardCommon::Page_Result);
+    initWizardPage(_webViewPage, WizardCommon::Page_WebView);
 
     connect(this, &QDialog::finished, this, &OwncloudWizard::basicSetupFinished);
 
@@ -112,8 +112,29 @@ OwncloudWizard::OwncloudWizard(QWidget *parent)
 
     // allow Flow2 page to poll on window activation
     connect(this, &OwncloudWizard::onActivate, _flow2CredsPage, &Flow2AuthCredsPage::slotPollNow);
+}
 
-    resize(650, 450);
+void OwncloudWizard::adjustWizardSizeForPage(QWizardPage *page)
+{
+    // Let the wizard page check how big it is
+    page->adjustSize();
+
+    // Adjust the whole wizard to the biggest size
+    const auto pageSize = page->sizeHint();
+    if (currentBiggestPageSize.width() < pageSize.width()) {
+        currentBiggestPageSize.setWidth(pageSize.width());
+    }
+    if (currentBiggestPageSize.height() < pageSize.height()) {
+        currentBiggestPageSize.setHeight(pageSize.height());
+    }
+    resize(currentBiggestPageSize);
+}
+
+void OwncloudWizard::initWizardPage(QWizardPage *page, WizardCommon::Pages pageId)
+{
+    // Add page to wizard
+    setPage(pageId, page);
+    adjustWizardSizeForPage(page);
 }
 
 void OwncloudWizard::setAccount(AccountPtr account)

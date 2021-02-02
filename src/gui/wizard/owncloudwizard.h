@@ -116,6 +116,8 @@ protected:
 
 private:
     void customizeStyle();
+    void initWizardPage(QWizardPage *page, WizardCommon::Pages pageId);
+    void adjustWizardSizeForPage(QWizardPage *page);
 
     AccountPtr _account;
 #ifdef WITH_PROVIDERS
@@ -133,6 +135,8 @@ private:
     QStringList _setupLog;
 
     bool _registration = false;
+
+    QSize currentBiggestPageSize {};
 
     friend class OwncloudSetupWizard;
 };
