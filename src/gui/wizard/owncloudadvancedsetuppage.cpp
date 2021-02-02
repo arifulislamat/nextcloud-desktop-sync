@@ -108,8 +108,6 @@ void OwncloudAdvancedSetupPage::setupCustomization()
 
     WizardCommon::customizeRadioButtonStyle(_ui.rSyncEverything);
     WizardCommon::customizeRadioButtonStyle(_ui.rSelectiveSync);
-    // Don't know a better way to set the padding to zero
-    _ui.rSyncEverything->setStyleSheet("color: white; padding-right: 0px");
     WizardCommon::customizeRadioButtonStyle(_ui.rKeepLocal);
     WizardCommon::customizeRadioButtonStyle(_ui.cbSyncFromScratch);
     WizardCommon::customizeRadioButtonStyle(_ui.rVirtualFileSync);
@@ -121,6 +119,7 @@ void OwncloudAdvancedSetupPage::setupCustomization()
 
     WizardCommon::customizeHintLabel(_ui.lFreeSpace);
     WizardCommon::customizeHintLabel(_ui.lSyncEverythingSizeLabel);
+    WizardCommon::customizeHintLabel(_ui.serverAddressLabel);
 }
 
 bool OwncloudAdvancedSetupPage::isComplete() const
