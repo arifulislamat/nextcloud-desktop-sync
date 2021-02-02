@@ -80,6 +80,7 @@ signals:
 private:
     void setLogo();
     void customizeStyle();
+    void setupServerAddressDescriptionLabel();
 
     Ui_OwncloudSetupPage _ui;
 

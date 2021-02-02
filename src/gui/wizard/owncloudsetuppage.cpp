@@ -46,6 +46,7 @@ OwncloudSetupPage::OwncloudSetupPage(QWidget *parent)
     _ui.setupUi(this);
 
     setLogo();
+    setupServerAddressDescriptionLabel();
 
     Theme *theme = Theme::instance();
     if (theme->overrideServerUrl().isEmpty()) {
@@ -76,6 +77,12 @@ OwncloudSetupPage::OwncloudSetupPage(QWidget *parent)
 void OwncloudSetupPage::setLogo()
 {
     _ui.logoLabel->setPixmap(Theme::hidpiFileName(":/client/theme/white/wizard-nextcloud.png"));
+}
+
+void OwncloudSetupPage::setupServerAddressDescriptionLabel()
+{
+    const auto appName = Theme::instance()->appNameGUI();
+    _ui.serverAddressDescriptionLabel->setText(tr("This is the link to your %1 web interface when you open it in the browser.").arg(appName));
 }
 
 void OwncloudSetupPage::setServerUrl(const QString &newUrl)
@@ -352,6 +359,12 @@ void OwncloudSetupPage::customizeStyle()
 {
     if (_progressIndi)
         _progressIndi->setColor(Qt::white);
+
+    QColor serverAddressDescriptionLabelTextColor(Qt::white);
+    serverAddressDescriptionLabelTextColor.setAlpha(128);
+    auto serverAddressDescriptionLabelPalette = _ui.serverAddressDescriptionLabel->palette();
+    serverAddressDescriptionLabelPalette.setColor(QPalette::Text, serverAddressDescriptionLabelTextColor);
+    _ui.serverAddressDescriptionLabel->setPalette(serverAddressDescriptionLabelPalette);
 }
 
 } // namespace OCC
