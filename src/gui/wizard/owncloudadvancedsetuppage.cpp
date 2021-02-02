@@ -43,6 +43,7 @@ OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage(OwncloudWizard *wizard)
     , _ocWizard(wizard)
 {
     _ui.setupUi(this);
+    setupSyncLogo();
 
     registerField(QLatin1String("OCSyncFromScratch"), _ui.cbSyncFromScratch);
 
@@ -107,6 +108,8 @@ void OwncloudAdvancedSetupPage::setupCustomization()
 
     WizardCommon::customizeRadioButtonStyle(_ui.rSyncEverything);
     WizardCommon::customizeRadioButtonStyle(_ui.rSelectiveSync);
+    // Don't know a better way to set the padding to zero
+    _ui.rSyncEverything->setStyleSheet("color: white; padding-right: 0px");
     WizardCommon::customizeRadioButtonStyle(_ui.rKeepLocal);
     WizardCommon::customizeRadioButtonStyle(_ui.cbSyncFromScratch);
     WizardCommon::customizeRadioButtonStyle(_ui.rVirtualFileSync);
@@ -115,6 +118,9 @@ void OwncloudAdvancedSetupPage::setupCustomization()
     WizardCommon::customizeCheckBoxStyle(_ui.confCheckBoxExternal);
 
     WizardCommon::customizeSecondaryButtonStyle(_ui.bSelectiveSync);
+
+    WizardCommon::customizeHintLabel(_ui.lFreeSpace);
+    WizardCommon::customizeHintLabel(_ui.lSyncEverythingSizeLabel);
 }
 
 bool OwncloudAdvancedSetupPage::isComplete() const
@@ -514,6 +520,11 @@ void OwncloudAdvancedSetupPage::setRadioChecked(QRadioButton *radio)
         _ui.rSelectiveSync->setCheckable(false);
     if (radio != _ui.rVirtualFileSync)
         _ui.rVirtualFileSync->setCheckable(false);
+}
+
+void OwncloudAdvancedSetupPage::setupSyncLogo()
+{
+    _ui.syncLogoLabel->setPixmap(Theme::hidpiFileName(":/client/theme/white/sync-arrows.png"));
 }
 
 } // namespace OCC

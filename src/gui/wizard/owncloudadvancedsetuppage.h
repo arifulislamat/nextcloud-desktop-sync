@@ -76,6 +76,7 @@ private:
     void customizeStyle();
     void setServerAddressLabelUrl(const QString &url);
     void setLocalFolderPushButtonPath(const QString &path);
+    void setupSyncLogo();
 
     Ui_OwncloudAdvancedSetupPage _ui;
     bool _checking = false;
