@@ -82,7 +82,7 @@ void OwncloudSetupPage::setLogo()
 void OwncloudSetupPage::setupServerAddressDescriptionLabel()
 {
     const auto appName = Theme::instance()->appNameGUI();
-    _ui.serverAddressDescriptionLabel->setText(tr("This is the link to your %1 web interface when you open it in the browser.").arg(appName));
+    _ui.serverAddressDescriptionLabel->setText(tr("The link to your %1 web interface when you open it in the browser.").arg(appName));
 }
 
 void OwncloudSetupPage::setServerUrl(const QString &newUrl)

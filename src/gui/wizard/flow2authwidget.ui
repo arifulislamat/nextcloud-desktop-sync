@@ -80,6 +80,9 @@
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
+     <property name="margin">
+      <number>8</number>
+     </property>
     </widget>
    </item>
    <item>
@@ -110,13 +113,6 @@
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="topMargin">
-      <number>0</number>
-     </property>
     </layout>
    </item>
    <item>

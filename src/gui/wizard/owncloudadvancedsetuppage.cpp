@@ -44,6 +44,9 @@ OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage(OwncloudWizard *wizard)
 {
     _ui.setupUi(this);
     setupSyncLogo();
+    setupSyncModeLabel();
+    setupRKeepLocal();
+    setupCbSyncFromScratch();
 
     registerField(QLatin1String("OCSyncFromScratch"), _ui.cbSyncFromScratch);
 
@@ -242,9 +245,9 @@ void OwncloudAdvancedSetupPage::updateStatus()
         if (dirNotEmpty) {
             t += tr("Warning: The local folder is not empty. Pick a resolution!");
         }
-        _ui.resolutionWidget->setVisible(dirNotEmpty);
+        setResolutionGuiVisible(dirNotEmpty);
     } else {
-        _ui.resolutionWidget->setVisible(false);
+        setResolutionGuiVisible(false);
     }
 
     QString lfreeSpaceStr = Utility::octetsToString(availableLocalSpace());
@@ -262,6 +265,13 @@ void OwncloudAdvancedSetupPage::updateStatus()
     setErrorString(errorStr);
 
     emit completeChanged();
+}
+
+void OwncloudAdvancedSetupPage::setResolutionGuiVisible(bool value)
+{
+    _ui.syncModeLabel->setVisible(value);
+    _ui.rKeepLocal->setVisible(value);
+    _ui.cbSyncFromScratch->setVisible(value);
 }
 
 /* obsolete */
@@ -524,6 +534,27 @@ void OwncloudAdvancedSetupPage::setRadioChecked(QRadioButton *radio)
 void OwncloudAdvancedSetupPage::setupSyncLogo()
 {
     _ui.syncLogoLabel->setPixmap(Theme::hidpiFileName(":/client/theme/white/sync-arrows.png"));
+}
+
+void OwncloudAdvancedSetupPage::setupSyncModeLabel()
+{
+    auto sizePolicy = _ui.syncModeLabel->sizePolicy();
+    sizePolicy.setRetainSizeWhenHidden(true);
+    _ui.syncModeLabel->setSizePolicy(sizePolicy);
+}
+
+void OwncloudAdvancedSetupPage::setupRKeepLocal()
+{
+    auto sizePolicy = _ui.rKeepLocal->sizePolicy();
+    sizePolicy.setRetainSizeWhenHidden(true);
+    _ui.rKeepLocal->setSizePolicy(sizePolicy);
+}
+
+void OwncloudAdvancedSetupPage::setupCbSyncFromScratch()
+{
+    auto sizePolicy = _ui.cbSyncFromScratch->sizePolicy();
+    sizePolicy.setRetainSizeWhenHidden(true);
+    _ui.cbSyncFromScratch->setSizePolicy(sizePolicy);
 }
 
 } // namespace OCC

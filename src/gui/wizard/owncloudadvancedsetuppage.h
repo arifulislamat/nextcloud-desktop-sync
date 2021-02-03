@@ -77,6 +77,10 @@ private:
     void setServerAddressLabelUrl(const QString &url);
     void setLocalFolderPushButtonPath(const QString &path);
     void setupSyncLogo();
+    void setResolutionGuiVisible(bool value);
+    void setupSyncModeLabel();
+    void setupRKeepLocal();
+    void setupCbSyncFromScratch();
 
     Ui_OwncloudAdvancedSetupPage _ui;
     bool _checking = false;
