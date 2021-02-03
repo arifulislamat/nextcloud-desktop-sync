@@ -176,6 +176,10 @@ void OwncloudAdvancedSetupPage::initializePage()
     _ui.confSpinBox->setValue(newFolderLimit.second);
     _ui.confCheckBoxExternal->setChecked(cfgFile.confirmExternalStorage());
 
+    // Reset user avatar
+    const auto appIcon = Theme::instance()->applicationIcon();
+    _ui.lServerIcon->setPixmap(appIcon.pixmap(48));
+    // Fetch user avatar
     auto account = _ocWizard->account();
     auto avatarJob = new AvatarJob(account, account->davUser(), 64, this);
     avatarJob->setTimeout(20 * 1000);
