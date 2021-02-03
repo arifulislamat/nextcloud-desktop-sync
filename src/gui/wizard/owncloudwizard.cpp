@@ -66,13 +66,13 @@ OwncloudWizard::OwncloudWizard(QWidget *parent)
 #ifdef WITH_PROVIDERS
     setPage(WizardCommon::Page_Welcome, _welcomePage);
 #endif // WITH_PROVIDERS
-    initWizardPage(_setupPage, WizardCommon::Page_ServerSetup);
-    initWizardPage(_httpCredsPage, WizardCommon::Page_HttpCreds);
-    initWizardPage(_browserCredsPage, WizardCommon::Page_OAuthCreds);
-    initWizardPage(_flow2CredsPage, WizardCommon::Page_Flow2AuthCreds);
-    initWizardPage(_advancedSetupPage, WizardCommon::Page_AdvancedSetup);
-    initWizardPage(_resultPage, WizardCommon::Page_Result);
-    initWizardPage(_webViewPage, WizardCommon::Page_WebView);
+    setPage(WizardCommon::Page_ServerSetup, _setupPage);
+    setPage(WizardCommon::Page_HttpCreds, _httpCredsPage);
+    setPage(WizardCommon::Page_OAuthCreds, _browserCredsPage);
+    setPage(WizardCommon::Page_Flow2AuthCreds, _flow2CredsPage);
+    setPage(WizardCommon::Page_AdvancedSetup, _advancedSetupPage);
+    setPage(WizardCommon::Page_Result, _resultPage);
+    setPage(WizardCommon::Page_WebView, _webViewPage);
 
     connect(this, &QDialog::finished, this, &OwncloudWizard::basicSetupFinished);
 
@@ -112,29 +112,33 @@ OwncloudWizard::OwncloudWizard(QWidget *parent)
 
     // allow Flow2 page to poll on window activation
     connect(this, &OwncloudWizard::onActivate, _flow2CredsPage, &Flow2AuthCredsPage::slotPollNow);
+
+    adjustWizardSize();
 }
 
-void OwncloudWizard::adjustWizardSizeForPage(QWizardPage *page)
+void OwncloudWizard::adjustWizardSize()
 {
-    // Let the wizard page check how big it is
-    page->adjustSize();
+    QList<QSize> pageSizes;
+    const auto pIds = pageIds();
+    std::transform(pIds.begin(), pIds.end(), std::back_inserter(pageSizes), [this](int pageId) {
+        auto p = page(pageId);
 
-    // Adjust the whole wizard to the biggest size
-    const auto pageSize = page->sizeHint();
-    if (currentBiggestPageSize.width() < pageSize.width()) {
-        currentBiggestPageSize.setWidth(pageSize.width());
-    }
-    if (currentBiggestPageSize.height() < pageSize.height()) {
-        currentBiggestPageSize.setHeight(pageSize.height());
-    }
-    resize(currentBiggestPageSize);
-}
+        p->adjustSize();
 
-void OwncloudWizard::initWizardPage(QWizardPage *page, WizardCommon::Pages pageId)
-{
-    // Add page to wizard
-    setPage(pageId, page);
-    adjustWizardSizeForPage(page);
+        return p->sizeHint();
+    });
+
+    const auto maxPageSize = *std::max_element(pageSizes.begin(), pageSizes.end(), [](const QSize &size1, const QSize &size2) {
+        if (size1.width() < size2.width()) {
+            return true;
+        }
+        if (size1.height() < size2.height()) {
+            return true;
+        }
+        return false;
+    });
+
+    resize(maxPageSize);
 }
 
 void OwncloudWizard::setAccount(AccountPtr account)
