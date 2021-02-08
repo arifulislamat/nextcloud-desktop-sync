@@ -126,17 +126,19 @@ void OwncloudWizard::adjustWizardSize()
         return p->sizeHint();
     });
 
-    const auto maxPageSize = *std::max_element(pageSizes.begin(), pageSizes.end(), [](const QSize &size1, const QSize &size2) {
-        if (size1.width() < size2.width()) {
+    const auto maxPageSizeIter = std::max_element(pageSizes.begin(), pageSizes.end(), [](const QSize &size1, const QSize &size2) {
+        const auto size1Widest = size1.width() > size1.height() ? size1.width() : size1.height();
+        const auto size2Widest = size2.width() > size2.height() ? size2.width() : size2.height();
+
+        if (size1Widest < size2Widest) {
             return true;
         }
-        if (size1.height() < size2.height()) {
-            return true;
-        }
+
         return false;
     });
 
-    resize(maxPageSize);
+    Q_ASSERT(maxPageSizeIter != pageSizes.end());
+    resize(*maxPageSizeIter);
 }
 
 void OwncloudWizard::setAccount(AccountPtr account)
