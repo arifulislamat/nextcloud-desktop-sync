@@ -20,9 +20,7 @@
 #include "owncloudgui.h"
 
 #include "wizard/owncloudwizard.h"
-#ifdef WITH_PROVIDERS
 #include "wizard/welcomepage.h"
-#endif // WITH_PROVIDERS
 #include "wizard/owncloudsetuppage.h"
 #include "wizard/owncloudhttpcredspage.h"
 #include "wizard/owncloudoauthcredspage.h"
