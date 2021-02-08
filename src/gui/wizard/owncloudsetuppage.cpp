@@ -361,8 +361,15 @@ void OwncloudSetupPage::customizeStyle()
 {
     setLogo();
 
-    if (_progressIndi)
-        _progressIndi->setColor(Qt::white);
+    if (_progressIndi) {
+        const auto isDarkBackground = Theme::isDarkColor(palette().window().color());
+        if (isDarkBackground) {
+            _progressIndi->setColor(Qt::white);
+        } else {
+            _progressIndi->setColor(Qt::black);
+        }
+    }
+
 
     WizardCommon::customizeHintLabel(_ui.serverAddressDescriptionLabel);
 }

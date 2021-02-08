@@ -536,8 +536,14 @@ void OwncloudAdvancedSetupPage::slotStyleChanged()
 
 void OwncloudAdvancedSetupPage::customizeStyle()
 {
-    if(_progressIndi)
-        _progressIndi->setColor(QGuiApplication::palette().color(QPalette::Text));
+    if (_progressIndi) {
+        const auto isDarkBackground = Theme::isDarkColor(palette().window().color());
+        if (isDarkBackground) {
+            _progressIndi->setColor(Qt::white);
+        } else {
+            _progressIndi->setColor(Qt::black);
+        }
+    }
 
     styleSyncLogo();
     styleLocalFolderLabel();
