@@ -33,17 +33,14 @@ private:
     bool _hidpi = false;
 };
 
-#define TEST_THEME_MAIN(TestObject)                                        \
-    int main(int argc, char *argv[])                                       \
-    {                                                                      \
-        Q_INIT_RESOURCE(resources);                                        \
-        Q_INIT_RESOURCE(theme);                                            \
-                                                                           \
-        TESTLIB_SELFCOVERAGE_START(#TestObject)                            \
-        QT_PREPEND_NAMESPACE(QTest::Internal::callInitMain)<TestObject>(); \
-        QCoreApplication app(argc, argv);                                  \
-        app.setAttribute(Qt::AA_Use96Dpi, true);                           \
-        TestObject tc;                                                     \
-        QTEST_SET_MAIN_SOURCE_PATH                                         \
-        return QTest::qExec(&tc, argc, argv);                              \
+#define TEST_THEME_MAIN(TestObject)              \
+    int main(int argc, char *argv[])             \
+    {                                            \
+        Q_INIT_RESOURCE(resources);              \
+        Q_INIT_RESOURCE(theme);                  \
+        QCoreApplication app(argc, argv);        \
+        app.setAttribute(Qt::AA_Use96Dpi, true); \
+        TestObject tc;                           \
+        QTEST_SET_MAIN_SOURCE_PATH               \
+        return QTest::qExec(&tc, argc, argv);    \
     }
