@@ -186,14 +186,16 @@ void OwncloudSetupPage::initializePage()
     if (pushButton)
         pushButton->setDefault(true);
 
-    // If url is overriden by theme, it's already set and
-    // we just check the server type and switch to second page
-    // immediately.
-    if (!Theme::instance()->forceOverrideServerUrl()) {
+    if (!Theme::instance()->overrideServerUrl().isEmpty() && !Theme::instance()->forceOverrideServerUrl()) {
+        // If the url is overwritten but we don't force to use that url
+        // Just focus the next button to let the user navigate quicker
         if (nextButton) {
             nextButton->setFocus();
         }
-
+    } else if (!Theme::instance()->overrideServerUrl().isEmpty()) {
+        // If the overwritten url is not empty and we force this overwritten url
+        // we just check the server type and switch to next page
+        // immediately.
         setCommitPage(true);
         // Hack: setCommitPage() changes caption, but after an error this page could still be visible
         setButtonText(QWizard::CommitButton, tr("&Next >"));
