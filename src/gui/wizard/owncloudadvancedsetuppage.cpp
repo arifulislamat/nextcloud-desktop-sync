@@ -43,7 +43,6 @@ OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage(OwncloudWizard *wizard)
     , _ocWizard(wizard)
 {
     _ui.setupUi(this);
-    setupSyncLogo();
     setupSyncModeLabel();
     setupRKeepLocal();
     setupCbSyncFromScratch();
@@ -70,8 +69,11 @@ OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage(OwncloudWizard *wizard)
 
     const auto theme = Theme::instance();
     QIcon appIcon = theme->applicationIcon();
-    _ui.lServerIcon->setPixmap(appIcon.pixmap(48));
-    _ui.lLocal->setPixmap(QPixmap(":/client/theme/white/folder-64.png"));
+    int appIconSize = 64;
+    if (Theme::isHidpi()) {
+        appIconSize *= 2;
+    }
+    _ui.lServerIcon->setPixmap(appIcon.pixmap(appIconSize));
 
     if (theme->wizardHideExternalStorageConfirmationCheckbox()) {
         _ui.confCheckBoxExternal->hide();
@@ -176,12 +178,24 @@ void OwncloudAdvancedSetupPage::initializePage()
     _ui.confSpinBox->setValue(newFolderLimit.second);
     _ui.confCheckBoxExternal->setChecked(cfgFile.confirmExternalStorage());
 
+    fetchUserAvatar();
+    fetchUserData();
+
+    customizeStyle();
+}
+
+void OwncloudAdvancedSetupPage::fetchUserAvatar()
+{
     // Reset user avatar
     const auto appIcon = Theme::instance()->applicationIcon();
     _ui.lServerIcon->setPixmap(appIcon.pixmap(48));
     // Fetch user avatar
     auto account = _ocWizard->account();
-    auto avatarJob = new AvatarJob(account, account->davUser(), 64, this);
+    int avatarSize = 64;
+    if (Theme::isHidpi()) {
+        avatarSize *= 2;
+    }
+    auto avatarJob = new AvatarJob(account, account->davUser(), avatarSize, this);
     avatarJob->setTimeout(20 * 1000);
     QObject::connect(avatarJob, &AvatarJob::avatarPixmap, this, [this](const QImage &avatarImage) {
         if (avatarImage.isNull()) {
@@ -191,6 +205,11 @@ void OwncloudAdvancedSetupPage::initializePage()
         _ui.lServerIcon->setPixmap(avatarPixmap);
     });
     avatarJob->start();
+}
+
+void OwncloudAdvancedSetupPage::fetchUserData()
+{
+    auto account = _ocWizard->account();
 
     // Fetch user data
     auto userJob = new JsonApiJob(account, QLatin1String("ocs/v1.php/cloud/user"), this);
@@ -519,6 +538,15 @@ void OwncloudAdvancedSetupPage::customizeStyle()
 {
     if(_progressIndi)
         _progressIndi->setColor(QGuiApplication::palette().color(QPalette::Text));
+
+    styleSyncLogo();
+    styleLocalFolderLabel();
+}
+
+void OwncloudAdvancedSetupPage::styleLocalFolderLabel()
+{
+    const auto backgroundColor = palette().window().color();
+    _ui.lLocal->setPixmap(QPixmap(Theme::hidpiFileName("folder.png", backgroundColor)));
 }
 
 void OwncloudAdvancedSetupPage::setRadioChecked(QRadioButton *radio)
@@ -535,9 +563,10 @@ void OwncloudAdvancedSetupPage::setRadioChecked(QRadioButton *radio)
         _ui.rVirtualFileSync->setCheckable(false);
 }
 
-void OwncloudAdvancedSetupPage::setupSyncLogo()
+void OwncloudAdvancedSetupPage::styleSyncLogo()
 {
-    _ui.syncLogoLabel->setPixmap(Theme::hidpiFileName(":/client/theme/white/sync-arrows.png"));
+    const auto backgroundColor = palette().window().color();
+    _ui.syncLogoLabel->setPixmap(Theme::hidpiFileName("sync-arrows.png", backgroundColor));
 }
 
 void OwncloudAdvancedSetupPage::setupSyncModeLabel()

@@ -246,6 +246,16 @@ QString Theme::themeImagePath(const QString &name, int size, bool sysTray) const
     }
 }
 
+bool Theme::isHidpi(QPaintDevice *dev)
+{
+    const auto devicePixelRatio = dev ? dev->devicePixelRatio() : qApp->primaryScreen()->devicePixelRatio();
+    if (devicePixelRatio <= 1) {
+        return false;
+    }
+
+    return true;
+}
+
 QIcon Theme::uiThemeIcon(const QString &iconName, bool uiHasDarkBg) const
 {
     QString themeResBasePath = ":/client/theme/";
@@ -256,8 +266,8 @@ QIcon Theme::uiThemeIcon(const QString &iconName, bool uiHasDarkBg) const
 
 QString Theme::hidpiFileName(const QString &fileName, QPaintDevice *dev)
 {
-    qreal devicePixelRatio = dev ? dev->devicePixelRatio() : qApp->primaryScreen()->devicePixelRatio();
-    if (devicePixelRatio <= 1.0) {
+    const auto hidpi = Theme::isHidpi(dev);
+    if (!hidpi) {
         return fileName;
     }
     // try to find a 2x version
@@ -272,6 +282,16 @@ QString Theme::hidpiFileName(const QString &fileName, QPaintDevice *dev)
         }
     }
     return fileName;
+}
+
+QString Theme::hidpiFileName(const QString &iconName, const QColor &backgroundColor, QPaintDevice *dev)
+{
+    const auto isDarkBackground = Theme::isDarkColor(backgroundColor);
+
+    const QString themeResBasePath = ":/client/theme/";
+    const QString iconPath = themeResBasePath + (isDarkBackground ? "white/" : "black/") + iconName;
+
+    return Theme::hidpiFileName(iconPath, dev);
 }
 
 
@@ -673,10 +693,14 @@ QString Theme::versionSwitchOutput() const
 
 bool Theme::isDarkColor(const QColor &color)
 {
+    // We want light icons on Nextcloud blue
+    if (color.red() == 0 && color.green() == 130 && color.blue() == 201) {
+        return true;
+    }
+
     // account for different sensitivity of the human eye to certain colors
-    // https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
-    const auto treshold = 0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue();
-    return treshold > 186;
+    double treshold = 1.0 - (0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue()) / 255.0;
+    return treshold > 0.5;
 }
 
 QColor Theme::getBackgroundAwareLinkColor(const QColor &backgroundColor)

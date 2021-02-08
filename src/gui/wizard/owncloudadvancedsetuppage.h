@@ -76,11 +76,14 @@ private:
     void customizeStyle();
     void setServerAddressLabelUrl(const QString &url);
     void setLocalFolderPushButtonPath(const QString &path);
-    void setupSyncLogo();
+    void styleSyncLogo();
+    void styleLocalFolderLabel();
     void setResolutionGuiVisible(bool value);
     void setupSyncModeLabel();
     void setupRKeepLocal();
     void setupCbSyncFromScratch();
+    void fetchUserAvatar();
+    void fetchUserData();
 
     Ui_OwncloudAdvancedSetupPage _ui;
     bool _checking = false;

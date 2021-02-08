@@ -30,10 +30,12 @@ class WelcomePage : public QWizardPage
 public:
     WelcomePage(OwncloudWizard *ocWizard);
     int nextId() const override;
+    void initializePage() override;
 
 private:
     void setupUi();
     void customizeStyle();
+    void styleSlideShow();
     void setupSlideShow();
     void setupLoginButton();
     void setupCreateAccountButton();

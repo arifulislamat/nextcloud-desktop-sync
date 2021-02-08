@@ -80,12 +80,10 @@
         <file>theme/colored/state-warning-64.png</file>
         <file>theme/colored/state-warning-128.png</file>
         <file>theme/colored/state-warning-256.png</file>
-        <file>theme/colored/folder-64.png</file>
-        <file>theme/colored/folder-128.png</file>
-        <file>theme/colored/folder-256.png</file>
-        <file>theme/white/folder-64.png</file>
-        <file>theme/white/folder-128.png</file>
-        <file>theme/white/folder-256.png</file>
+        <file>theme/black/folder.png</file>
+        <file>theme/black/folder@2x.png</file>
+        <file>theme/white/folder.png</file>
+        <file>theme/white/folder@2x.png</file>
         <file>theme/black/control-next.svg</file>
         <file>theme/black/control-prev.svg</file>
         <file>theme/black/state-error.svg</file>
@@ -150,6 +148,7 @@
         <file>theme/white/sync-arrows.png</file>
         <file>theme/white/sync-arrows@2x.png</file>
         <file>theme/white/external.png</file>
+        <file>theme/white/external@2x.png</file>
         <file>theme/white/folder.svg</file>
         <file>theme/white/more-apps.svg</file>
         <file>theme/white/talk-app.svg</file>

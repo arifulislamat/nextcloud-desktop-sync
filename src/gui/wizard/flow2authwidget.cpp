@@ -40,14 +40,12 @@ Flow2AuthWidget::Flow2AuthWidget(QWidget *parent)
 
     _ui.horizontalLayout->addWidget(_progressIndi);
     stopSpinner(false);
-
-    setLogo();
-    customizeStyle();
 }
 
 void Flow2AuthWidget::setLogo()
 {
-    _ui.logoLabel->setPixmap(Theme::hidpiFileName(":/client/theme/white/external.png"));
+    const auto backgroundColor = palette().window().color();
+    _ui.logoLabel->setPixmap(Theme::hidpiFileName("external.png", backgroundColor));
 }
 
 void Flow2AuthWidget::startAuth(Account *account)
@@ -194,6 +192,8 @@ void Flow2AuthWidget::slotStyleChanged()
 
 void Flow2AuthWidget::customizeStyle()
 {
+    setLogo();
+
     if(_progressIndi)
         _progressIndi->setColor(Qt::white);
 

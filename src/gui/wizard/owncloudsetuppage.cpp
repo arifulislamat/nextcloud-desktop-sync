@@ -45,7 +45,6 @@ OwncloudSetupPage::OwncloudSetupPage(QWidget *parent)
 {
     _ui.setupUi(this);
 
-    setLogo();
     setupServerAddressDescriptionLabel();
 
     Theme *theme = Theme::instance();
@@ -70,13 +69,12 @@ OwncloudSetupPage::OwncloudSetupPage(QWidget *parent)
 
     addCertDial = new AddCertificateDialog(this);
     connect(addCertDial, &QDialog::accepted, this, &OwncloudSetupPage::slotCertificateAccepted);
-
-    customizeStyle();
 }
 
 void OwncloudSetupPage::setLogo()
 {
-    _ui.logoLabel->setPixmap(Theme::hidpiFileName(":/client/theme/white/wizard-nextcloud.png"));
+    const auto backgroundColor = palette().window().color();
+    _ui.logoLabel->setPixmap(Theme::hidpiFileName("wizard-nextcloud.png", backgroundColor));
 }
 
 void OwncloudSetupPage::setupServerAddressDescriptionLabel()
@@ -176,6 +174,8 @@ bool OwncloudSetupPage::isComplete() const
 
 void OwncloudSetupPage::initializePage()
 {
+    customizeStyle();
+
     WizardCommon::initErrorLabel(_ui.errorLabel);
 
     _authTypeKnown = false;
@@ -357,6 +357,8 @@ void OwncloudSetupPage::slotStyleChanged()
 
 void OwncloudSetupPage::customizeStyle()
 {
+    setLogo();
+
     if (_progressIndi)
         _progressIndi->setColor(Qt::white);
 

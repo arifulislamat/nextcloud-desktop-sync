@@ -12,7 +12,6 @@ WelcomePage::WelcomePage(OwncloudWizard *ocWizard)
     , _ocWizard(ocWizard)
 {
     setupUi();
-    customizeStyle();
 }
 
 void WelcomePage::setupUi()
@@ -24,19 +23,27 @@ void WelcomePage::setupUi()
     setupHostYourOwnServerButton();
 }
 
-void WelcomePage::setupSlideShow()
+void WelcomePage::initializePage()
 {
-    const auto isDarkBackground = Theme::isDarkColor(QGuiApplication::palette().window().color());
+    customizeStyle();
+}
 
-    _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/white/wizard-nextcloud.png"), tr("Keep your data secure and under your control"));
-    _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/white/wizard-files.png"), tr("Secure collaboration & file exchange"));
-    _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/white/wizard-groupware.png"), tr("Easy-to-use web mail, calendaring & contacts"));
-    _ui.slideShow->addSlide(Theme::hidpiFileName(":/client/theme/white/wizard-talk.png"), tr("Screensharing, online meetings & web conferences"));
+void WelcomePage::styleSlideShow()
+{
+    const auto backgroundColor = palette().window().color();
+    _ui.slideShow->addSlide(Theme::hidpiFileName("wizard-nextcloud.png", backgroundColor), tr("Keep your data secure and under your control"));
+    _ui.slideShow->addSlide(Theme::hidpiFileName("wizard-files.png", backgroundColor), tr("Secure collaboration & file exchange"));
+    _ui.slideShow->addSlide(Theme::hidpiFileName("wizard-groupware.png", backgroundColor), tr("Easy-to-use web mail, calendaring & contacts"));
+    _ui.slideShow->addSlide(Theme::hidpiFileName("wizard-talk.png", backgroundColor), tr("Screensharing, online meetings & web conferences"));
 
     const auto theme = Theme::instance();
+    const auto isDarkBackground = Theme::isDarkColor(backgroundColor);
     _ui.slideShowNextButton->setIcon(theme->uiThemeIcon(QString("control-next.svg"), isDarkBackground));
     _ui.slideShowPreviousButton->setIcon(theme->uiThemeIcon(QString("control-prev.svg"), isDarkBackground));
+}
 
+void WelcomePage::setupSlideShow()
+{
     connect(_ui.slideShow, &SlideShow::clicked, _ui.slideShow, &SlideShow::stopShow);
     connect(_ui.slideShowNextButton, &QPushButton::clicked, _ui.slideShow, &SlideShow::nextSlide);
     connect(_ui.slideShowPreviousButton, &QPushButton::clicked, _ui.slideShow, &SlideShow::prevSlide);
@@ -64,10 +71,6 @@ void WelcomePage::setupCreateAccountButton()
 
 void WelcomePage::setupHostYourOwnServerButton()
 {
-    auto hostYourOwnServerButtonPalette = _ui.hostYourOwnServerButton->palette();
-    hostYourOwnServerButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->wizardHeaderTitleColor());
-    _ui.hostYourOwnServerButton->setPalette(hostYourOwnServerButtonPalette);
-
     connect(_ui.hostYourOwnServerButton, &QPushButton::clicked, this, []() {
         QDesktopServices::openUrl(QUrl("https://docs.nextcloud.com/server/latest/admin_manual/installation/#installation"));
     });
@@ -81,5 +84,7 @@ int WelcomePage::nextId() const
 void WelcomePage::customizeStyle()
 {
     WizardCommon::customizeSecondaryButtonStyle(_ui.createAccountButton);
+    WizardCommon::customizeSecondaryButtonStyle(_ui.hostYourOwnServerButton);
+    styleSlideShow();
 }
 }

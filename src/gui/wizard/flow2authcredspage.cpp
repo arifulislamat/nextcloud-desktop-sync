@@ -56,6 +56,8 @@ void Flow2AuthCredsPage::initializePage()
 
     // Don't hide the wizard (avoid user confusion)!
     //wizard()->hide();
+
+    _flow2AuthWidget->slotStyleChanged();
 }
 
 void OCC::Flow2AuthCredsPage::cleanupPage()
