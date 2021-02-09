@@ -561,6 +561,39 @@ QColor Theme::wizardHeaderBackgroundColor() const
     return {APPLICATION_WIZARD_HEADER_BACKGROUND_COLOR};
 }
 
+QPixmap Theme::wizardApplicationLogo(const QColor &backgroundColor) const
+{
+    if (QString(APPLICATION_NAME) == "Nextcloud") {
+        return QPixmap(Theme::hidpiFileName("wizard-nextcloud.png", backgroundColor));
+    }
+#ifdef APPLICATION_WIZARD_USE_CUSTOM_LOGO
+    const auto useSvg = shouldPreferSvg();
+    const auto logoBasePath = QStringLiteral(":/client/theme/colored/wizard_logo");
+    if (useSvg) {
+        auto maxHeight = 0;
+        if (Theme::isHidpi()) {
+            maxHeight = 200;
+        } else {
+            maxHeight = 100;
+        }
+        const auto maxWidth = 2 * maxHeight;
+        const auto icon = QIcon(logoBasePath + ".svg");
+        const auto size = icon.actualSize(QSize(maxWidth, maxHeight));
+        return icon.pixmap(size);
+    } else {
+        return QPixmap(hidpiFileName(logoBasePath + ".png"));
+    }
+#else
+    auto size = 0;
+    if (Theme::isHidpi()) {
+        size = 200;
+    } else {
+        size = 100;
+    }
+    return applicationIcon().pixmap(size);
+#endif
+}
+
 QPixmap Theme::wizardHeaderLogo() const
 {
 #ifdef APPLICATION_WIZARD_USE_CUSTOM_LOGO

@@ -235,6 +235,8 @@ public:
     /** @return color for the setup wizard. */
     virtual QColor wizardHeaderBackgroundColor() const;
 
+    virtual QPixmap wizardApplicationLogo(const QColor &backgroundColor = QColor("#ffffff")) const;
+
     /** @return logo for the setup wizard. */
     virtual QPixmap wizardHeaderLogo() const;
 

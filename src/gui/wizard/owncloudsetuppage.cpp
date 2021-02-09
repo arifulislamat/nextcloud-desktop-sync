@@ -74,7 +74,7 @@ OwncloudSetupPage::OwncloudSetupPage(QWidget *parent)
 void OwncloudSetupPage::setLogo()
 {
     const auto backgroundColor = palette().window().color();
-    _ui.logoLabel->setPixmap(Theme::hidpiFileName("wizard-nextcloud.png", backgroundColor));
+    _ui.logoLabel->setPixmap(Theme::instance()->wizardApplicationLogo(backgroundColor));
 }
 
 void OwncloudSetupPage::setupServerAddressDescriptionLabel()
