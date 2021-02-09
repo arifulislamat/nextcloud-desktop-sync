@@ -55,7 +55,7 @@ void WebViewPage::initializePage() {
     qCInfo(lcWizardWebiewPage()) << "Url to auth at: " << url;
     _webView->setUrl(QUrl(url));
 
-    _originalWizardSize = _ocWizard->sizeHint();
+    _originalWizardSize = _ocWizard->size();
     resizeWizard();
 }
 
