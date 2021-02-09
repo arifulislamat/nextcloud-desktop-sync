@@ -71,7 +71,7 @@ void WelcomePage::setupCreateAccountButton()
 
 void WelcomePage::setupHostYourOwnServerButton()
 {
-    connect(_ui.hostYourOwnServerButton, &QPushButton::clicked, this, []() {
+    connect(_ui.hostYourOwnServerButton, &QPushButton::clicked, this, [] {
         QDesktopServices::openUrl(QUrl("https://docs.nextcloud.com/server/latest/admin_manual/installation/#installation"));
     });
 }
