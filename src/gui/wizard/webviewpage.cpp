@@ -4,6 +4,7 @@
 #include <QProgressBar>
 #include <QVBoxLayout>
 #include <QNetworkProxyFactory>
+#include <QScreen>
 
 #include "owncloudwizard.h"
 #include "creds/webflowcredentials.h"
@@ -24,6 +25,7 @@ WebViewPage::WebViewPage(QWidget *parent)
     _webView = new WebView(this);
 
     auto *layout = new QVBoxLayout(this);
+    layout->setMargin(0);
     layout->addWidget(_webView);
     setLayout(layout);
 
@@ -52,6 +54,39 @@ void WebViewPage::initializePage() {
     }
     qCInfo(lcWizardWebiewPage()) << "Url to auth at: " << url;
     _webView->setUrl(QUrl(url));
+
+    _originalWizardSize = _ocWizard->sizeHint();
+    resizeWizard();
+}
+
+void WebViewPage::resizeWizard()
+{
+    // The webview needs a little bit more space
+    const auto windowGeometry = QGuiApplication::primaryScreen()->geometry();
+    const auto windowWidth = windowGeometry.width();
+    const auto windowHeight = windowGeometry.height();
+    const auto newWizardWidth = _originalWizardSize.width() * 2;
+    const auto newWizardHeight = _originalWizardSize.height() * 2;
+
+    if (newWizardWidth < windowWidth && newWizardHeight < windowHeight) {
+        _ocWizard->resize(newWizardWidth, newWizardHeight);
+        centerWindow();
+    }
+}
+
+void WebViewPage::centerWindow()
+{
+    auto window = _ocWizard->window();
+    const auto screenGeometry = QGuiApplication::primaryScreen()->geometry();
+    const auto windowGeometry = window->geometry();
+    const auto newWindowPosition = screenGeometry.center() - QPoint(windowGeometry.width() / 2, windowGeometry.height() / 2);
+    window->move(newWindowPosition);
+}
+
+void WebViewPage::cleanupPage()
+{
+    _ocWizard->resize(_originalWizardSize);
+    centerWindow();
 }
 
 int WebViewPage::nextId() const {
