@@ -249,11 +249,7 @@ QString Theme::themeImagePath(const QString &name, int size, bool sysTray) const
 bool Theme::isHidpi(QPaintDevice *dev)
 {
     const auto devicePixelRatio = dev ? dev->devicePixelRatio() : qApp->primaryScreen()->devicePixelRatio();
-    if (devicePixelRatio <= 1) {
-        return false;
-    }
-
-    return true;
+    return devicePixelRatio > 1;
 }
 
 QIcon Theme::uiThemeIcon(const QString &iconName, bool uiHasDarkBg) const
@@ -266,8 +262,7 @@ QIcon Theme::uiThemeIcon(const QString &iconName, bool uiHasDarkBg) const
 
 QString Theme::hidpiFileName(const QString &fileName, QPaintDevice *dev)
 {
-    const auto hidpi = Theme::isHidpi(dev);
-    if (!hidpi) {
+    if (!Theme::isHidpi(dev)) {
         return fileName;
     }
     // try to find a 2x version
@@ -563,7 +558,7 @@ QColor Theme::applicationBackgroundColor() const
 
 QPixmap Theme::wizardApplicationLogo(const QColor &backgroundColor) const
 {
-    if (QString(APPLICATION_NAME) == "Nextcloud") {
+    if (Theme::isBranded()) {
         return QPixmap(Theme::hidpiFileName("wizard-nextcloud.png", backgroundColor));
     }
 #ifdef APPLICATION_WIZARD_USE_CUSTOM_LOGO
@@ -727,7 +722,7 @@ QString Theme::versionSwitchOutput() const
 bool Theme::isDarkColor(const QColor &color)
 {
     // We want light icons on Nextcloud blue
-    if (color.red() == 0 && color.green() == 130 && color.blue() == 201) {
+    if (color == NEXTCLOUD_BLUE) {
         return true;
     }
 
