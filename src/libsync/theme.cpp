@@ -722,7 +722,7 @@ QString Theme::versionSwitchOutput() const
 bool Theme::isDarkColor(const QColor &color)
 {
     // We want light icons on Nextcloud blue
-    if (color == NEXTCLOUD_BLUE) {
+    if (color == NEXTCLOUD_BACKGROUND_COLOR) {
         return true;
     }
 
