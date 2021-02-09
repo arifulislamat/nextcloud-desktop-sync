@@ -256,6 +256,8 @@ void OwncloudWizard::slotCurrentPageChanged(int id)
     if (id == WizardCommon::Page_Welcome) {
         // Hide all buttons on welcome page
         setButtonLayout({});
+    } else if (id == WizardCommon::Page_WebView) {
+        setButtonLayout({ QWizard::Stretch, QWizard::BackButton });
     } else {
         // Otherwise show back and next button
         QList<QWizard::WizardButton> buttonLayout;
