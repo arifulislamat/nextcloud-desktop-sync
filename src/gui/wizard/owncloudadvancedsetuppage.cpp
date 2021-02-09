@@ -121,6 +121,7 @@ void OwncloudAdvancedSetupPage::setupCustomization()
     WizardCommon::customizeCheckBoxStyle(_ui.confCheckBoxExternal);
 
     WizardCommon::customizeSecondaryButtonStyle(_ui.bSelectiveSync);
+    WizardCommon::customizePrimaryButtonStyle(_ui.pbSelectLocalFolder);
 
     WizardCommon::customizeHintLabel(_ui.lFreeSpace);
     WizardCommon::customizeHintLabel(_ui.lSyncEverythingSizeLabel);
