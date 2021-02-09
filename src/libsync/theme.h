@@ -53,8 +53,8 @@ class OWNCLOUDSYNC_EXPORT Theme : public QObject
     Q_PROPERTY(QString overrideServerUrl READ overrideServerUrl)
     Q_PROPERTY(bool forceOverrideServerUrl READ forceOverrideServerUrl)
 #ifndef TOKEN_AUTH_ONLY
-    Q_PROPERTY(QColor applicationTitleColor READ applicationTitleColor CONSTANT)
-    Q_PROPERTY(QColor applicationBackgroundColor READ applicationBackgroundColor CONSTANT)
+    Q_PROPERTY(QColor wizardHeaderTitleColor READ applicationTitleColor CONSTANT)
+    Q_PROPERTY(QColor wizardHeaderBackgroundColor READ applicationBackgroundColor CONSTANT)
 #endif
     Q_PROPERTY(QString updateCheckUrl READ updateCheckUrl CONSTANT)
 public:
