@@ -366,12 +366,12 @@ void OwncloudWizard::customizeStyle()
     auto theme = Theme::instance();
     auto wizardPalette = palette();
 
-    wizardPalette.setColor(QPalette::Window, theme->wizardHeaderBackgroundColor());
-    wizardPalette.setColor(QPalette::Base, theme->wizardHeaderBackgroundColor());
-    wizardPalette.setColor(QPalette::WindowText, theme->wizardHeaderTitleColor());
-    wizardPalette.setColor(QPalette::Text, theme->wizardHeaderTitleColor());
+    wizardPalette.setColor(QPalette::Window, theme->applicationBackgroundColor());
+    wizardPalette.setColor(QPalette::Base, theme->applicationBackgroundColor());
+    wizardPalette.setColor(QPalette::WindowText, theme->applicationTitleColor());
+    wizardPalette.setColor(QPalette::Text, theme->applicationTitleColor());
     // Set separator color
-    wizardPalette.setColor(QPalette::Mid, theme->wizardHeaderBackgroundColor());
+    wizardPalette.setColor(QPalette::Mid, theme->applicationBackgroundColor());
 
     setPalette(wizardPalette);
 

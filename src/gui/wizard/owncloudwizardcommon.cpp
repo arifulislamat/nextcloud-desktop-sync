@@ -51,12 +51,12 @@ namespace WizardCommon {
 
     QString titleTemplate()
     {
-        return QString::fromLatin1(R"(<font color="%1" size="5">)").arg(Theme::instance()->wizardHeaderTitleColor().name()) + QString::fromLatin1("%1</font>");
+        return QString::fromLatin1(R"(<font color="%1" size="5">)").arg(Theme::instance()->applicationTitleColor().name()) + QString::fromLatin1("%1</font>");
     }
 
     QString subTitleTemplate()
     {
-        return QString::fromLatin1("<font color=\"%1\">").arg(Theme::instance()->wizardHeaderTitleColor().name()) + QString::fromLatin1("%1</font>");
+        return QString::fromLatin1("<font color=\"%1\">").arg(Theme::instance()->applicationTitleColor().name()) + QString::fromLatin1("%1</font>");
     }
 
     void initErrorLabel(QLabel *errorLabel)
@@ -100,22 +100,22 @@ namespace WizardCommon {
     void customizeSecondaryButtonStyle(QAbstractButton *button)
     {
         auto pushButtonPalette = button->palette();
-        pushButtonPalette.setColor(QPalette::Button, Theme::instance()->wizardHeaderBackgroundColor());
-        pushButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->wizardHeaderTitleColor());
+        pushButtonPalette.setColor(QPalette::Button, Theme::instance()->applicationBackgroundColor());
+        pushButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->applicationTitleColor());
         button->setPalette(pushButtonPalette);
     }
 
     void customizePrimaryButtonStyle(QAbstractButton *button)
     {
         auto pushButtonPalette = button->palette();
-        pushButtonPalette.setColor(QPalette::Button, Theme::instance()->wizardHeaderTitleColor());
-        pushButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->wizardHeaderBackgroundColor());
+        pushButtonPalette.setColor(QPalette::Button, Theme::instance()->applicationTitleColor());
+        pushButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->applicationBackgroundColor());
         button->setPalette(pushButtonPalette);
     }
 
     void customizeHintLabel(QLabel *label)
     {
-        QColor textColor(Theme::instance()->wizardHeaderTitleColor());
+        QColor textColor(Theme::instance()->applicationTitleColor());
         textColor.setAlpha(128);
 
         auto palette = label->palette();

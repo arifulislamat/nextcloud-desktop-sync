@@ -551,14 +551,14 @@ QIcon Theme::folderOfflineIcon(bool sysTray) const
     return themeIcon(QLatin1String("state-offline"), sysTray);
 }
 
-QColor Theme::wizardHeaderTitleColor() const
+QColor Theme::applicationTitleColor() const
 {
-    return {APPLICATION_WIZARD_HEADER_TITLE_COLOR};
+    return { APPLICATION_TITLE_COLOR };
 }
 
-QColor Theme::wizardHeaderBackgroundColor() const
+QColor Theme::applicationBackgroundColor() const
 {
-    return {APPLICATION_WIZARD_HEADER_BACKGROUND_COLOR};
+    return { APPLICATION_BACKGROUND_COLOR };
 }
 
 QPixmap Theme::wizardApplicationLogo(const QColor &backgroundColor) const
@@ -615,7 +615,7 @@ QPixmap Theme::wizardHeaderLogo() const
 
 QPixmap Theme::wizardHeaderBanner() const
 {
-    QColor c = wizardHeaderBackgroundColor();
+    QColor c = applicationBackgroundColor();
     if (!c.isValid())
         return QPixmap();
 
@@ -628,7 +628,7 @@ QPixmap Theme::wizardHeaderBanner() const
             size *= ratio;
     }
     QPixmap pix(size);
-    pix.fill(wizardHeaderBackgroundColor());
+    pix.fill(applicationBackgroundColor());
     return pix;
 }
 #endif
