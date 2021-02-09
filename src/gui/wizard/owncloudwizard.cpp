@@ -252,7 +252,6 @@ void OwncloudWizard::slotCurrentPageChanged(int id)
 {
     qCDebug(lcWizard) << "Current Wizard page changed to " << id;
 
-#ifdef WITH_PROVIDERS
     if (id == WizardCommon::Page_Welcome) {
         // Hide all buttons on welcome page
         setButtonLayout({});
@@ -270,17 +269,6 @@ void OwncloudWizard::slotCurrentPageChanged(int id)
         buttonLayout << QWizard::BackButton << QWizard::NextButton;
         setButtonLayout(buttonLayout);
     }
-#else // WITH_PROVIDERS
-    QList<QWizard::WizardButton> buttonLayout;
-    buttonLayout << QWizard::Stretch;
-
-    if (id == WizardCommon::Page_AdvancedSetup) {
-        buttonLayout << QWizard::CustomButton1;
-    }
-
-    buttonLayout << QWizard::BackButton << QWizard::NextButton;
-    setButtonLayout(buttonLayout);
-#endif // WITH_PROVIDERS
 
     if (id == WizardCommon::Page_ServerSetup) {
         emit clearPendingRequests();
