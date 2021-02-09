@@ -191,18 +191,18 @@ void OwncloudAdvancedSetupPage::fetchUserAvatar()
     const auto appIcon = Theme::instance()->applicationIcon();
     _ui.lServerIcon->setPixmap(appIcon.pixmap(48));
     // Fetch user avatar
-    auto account = _ocWizard->account();
-    int avatarSize = 64;
+    const auto account = _ocWizard->account();
+    auto avatarSize = 64;
     if (Theme::isHidpi()) {
         avatarSize *= 2;
     }
-    auto avatarJob = new AvatarJob(account, account->davUser(), avatarSize, this);
+    const auto avatarJob = new AvatarJob(account, account->davUser(), avatarSize, this);
     avatarJob->setTimeout(20 * 1000);
     QObject::connect(avatarJob, &AvatarJob::avatarPixmap, this, [this](const QImage &avatarImage) {
         if (avatarImage.isNull()) {
             return;
         }
-        auto avatarPixmap = QPixmap::fromImage(AvatarJob::makeCircularAvatar(avatarImage));
+        const auto avatarPixmap = QPixmap::fromImage(AvatarJob::makeCircularAvatar(avatarImage));
         _ui.lServerIcon->setPixmap(avatarPixmap);
     });
     avatarJob->start();
@@ -210,13 +210,13 @@ void OwncloudAdvancedSetupPage::fetchUserAvatar()
 
 void OwncloudAdvancedSetupPage::fetchUserData()
 {
-    auto account = _ocWizard->account();
+    const auto account = _ocWizard->account();
 
     // Fetch user data
-    auto userJob = new JsonApiJob(account, QLatin1String("ocs/v1.php/cloud/user"), this);
+    const auto userJob = new JsonApiJob(account, QLatin1String("ocs/v1.php/cloud/user"), this);
     userJob->setTimeout(20 * 1000);
     connect(userJob, &JsonApiJob::jsonReceived, this, [this](const QJsonDocument &json) {
-        auto objData = json.object().value("ocs").toObject().value("data").toObject();
+        const auto objData = json.object().value("ocs").toObject().value("data").toObject();
         const auto displayName = objData.value("display-name").toString();
         _ui.userNameLabel->setText(displayName);
     });
