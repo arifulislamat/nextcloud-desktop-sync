@@ -125,6 +125,7 @@ void OwncloudAdvancedSetupPage::setupCustomization()
 
     WizardCommon::customizeHintLabel(_ui.lFreeSpace);
     WizardCommon::customizeHintLabel(_ui.lSyncEverythingSizeLabel);
+    WizardCommon::customizeHintLabel(_ui.lSelectiveSyncSizeLabel);
     WizardCommon::customizeHintLabel(_ui.serverAddressLabel);
 }
 

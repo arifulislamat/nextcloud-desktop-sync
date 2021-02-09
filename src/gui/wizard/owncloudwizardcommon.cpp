@@ -83,17 +83,48 @@ namespace WizardCommon {
     void customizeSpinBoxStyle(QSpinBox *spinBox)
     {
         auto spinBoxPalette = spinBox->palette();
+
         spinBoxPalette.setColor(QPalette::Base, Qt::white);
+        QColor colorBaseDisabled(spinBoxPalette.color(QPalette::Base));
+        colorBaseDisabled.setAlpha(128);
+        spinBoxPalette.setColor(QPalette::Disabled, QPalette::Base, colorBaseDisabled);
+
+        spinBoxPalette.setColor(QPalette::Button, Qt::white);
+        QColor colorButtonDisabled(spinBoxPalette.color(QPalette::Button));
+        colorButtonDisabled.setAlpha(128);
+        spinBoxPalette.setColor(QPalette::Disabled, QPalette::Button, colorButtonDisabled);
+
         spinBoxPalette.setColor(QPalette::WindowText, Qt::black);
+        QColor colorWindowTextDisabled(spinBoxPalette.color(QPalette::WindowText));
+        colorWindowTextDisabled.setAlpha(128);
+        spinBoxPalette.setColor(QPalette::Disabled, QPalette::WindowText, colorWindowTextDisabled);
+
         spinBoxPalette.setColor(QPalette::Text, Qt::black);
+        QColor colorTextDisabled(spinBoxPalette.color(QPalette::Text));
+        colorTextDisabled.setAlpha(128);
+        spinBoxPalette.setColor(QPalette::Disabled, QPalette::Text, colorTextDisabled);
+
         spinBox->setPalette(spinBoxPalette);
     }
 
     void customizeCheckBoxStyle(QCheckBox *checkBox)
     {
         auto checkBoxPalette = checkBox->palette();
+
         checkBoxPalette.setColor(QPalette::Text, Qt::black);
+        QColor colorTextDisabled(checkBoxPalette.color(QPalette::Text));
+        colorTextDisabled.setAlpha(128);
+        checkBoxPalette.setColor(QPalette::Disabled, QPalette::Text, colorTextDisabled);
+
+        checkBoxPalette.setColor(QPalette::WindowText, Qt::white);
+        QColor colorWindowTextDisabled(checkBoxPalette.color(QPalette::WindowText));
+        colorWindowTextDisabled.setAlpha(128);
+        checkBoxPalette.setColor(QPalette::Disabled, QPalette::WindowText, colorWindowTextDisabled);
+
         checkBoxPalette.setColor(QPalette::Base, Qt::white);
+        QColor colorBaseDisabled(checkBoxPalette.color(QPalette::Base));
+        colorBaseDisabled.setAlpha(128);
+        checkBoxPalette.setColor(QPalette::Disabled, QPalette::Base, colorBaseDisabled);
         checkBox->setPalette(checkBoxPalette);
     }
 
