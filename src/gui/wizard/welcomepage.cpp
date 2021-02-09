@@ -85,6 +85,7 @@ void WelcomePage::customizeStyle()
 {
     WizardCommon::customizeSecondaryButtonStyle(_ui.createAccountButton);
     WizardCommon::customizeSecondaryButtonStyle(_ui.hostYourOwnServerButton);
+    WizardCommon::customizePrimaryButtonStyle(_ui.loginButton);
     styleSlideShow();
 }
 }

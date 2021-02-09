@@ -105,9 +105,17 @@ namespace WizardCommon {
         button->setPalette(pushButtonPalette);
     }
 
+    void customizePrimaryButtonStyle(QAbstractButton *button)
+    {
+        auto pushButtonPalette = button->palette();
+        pushButtonPalette.setColor(QPalette::Button, Theme::instance()->wizardHeaderTitleColor());
+        pushButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->wizardHeaderBackgroundColor());
+        button->setPalette(pushButtonPalette);
+    }
+
     void customizeHintLabel(QLabel *label)
     {
-        QColor textColor(Qt::white);
+        QColor textColor(Theme::instance()->wizardHeaderTitleColor());
         textColor.setAlpha(128);
 
         auto palette = label->palette();

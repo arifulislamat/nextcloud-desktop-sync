@@ -92,8 +92,6 @@ OwncloudWizard::OwncloudWizard(QWidget *parent)
     Theme *theme = Theme::instance();
     setWindowTitle(tr("Add %1 account").arg(theme->appNameGUI()));
     setWizardStyle(QWizard::ModernStyle);
-    setPixmap(QWizard::BannerPixmap, theme->wizardHeaderBanner());
-    setPixmap(QWizard::LogoPixmap, theme->wizardHeaderLogo());
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
     setOption(QWizard::NoCancelButton);
@@ -375,6 +373,7 @@ void OwncloudWizard::customizeStyle()
 
     setPalette(wizardPalette);
 
+    WizardCommon::customizePrimaryButtonStyle(button(QWizard::NextButton));
     WizardCommon::customizeSecondaryButtonStyle(button(QWizard::CustomButton1));
     WizardCommon::customizeSecondaryButtonStyle(button(QWizard::BackButton));
 }
