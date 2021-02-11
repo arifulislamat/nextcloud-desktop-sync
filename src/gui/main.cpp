@@ -73,6 +73,9 @@ int main(int argc, char **argv)
 #endif
     OCC::Application app(argc, argv);
 
+    QTextCodec *codec1 = QTextCodec::codecForName("UTF-8");
+    QTextCodec::setCodecForLocale(codec1);
+
 #ifdef Q_OS_WIN
     // The Windows style still has pixelated elements with Qt 5.6,
     // it's recommended to use the Fusion style in this case, even
