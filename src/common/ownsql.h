@@ -152,7 +152,6 @@ public:
         bindValueInternal(pos, value);
     }
 
-    template<>
     void bindValue(int pos, const QByteArray &value)
     {
         qCDebug(lcSql) << "SQL bind" << pos << QString::fromUtf8(value);
