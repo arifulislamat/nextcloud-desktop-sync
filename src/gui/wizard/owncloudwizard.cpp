@@ -136,7 +136,9 @@ void OwncloudWizard::adjustWizardSize()
     });
 
     Q_ASSERT(maxPageSizeIter != pageSizes.end());
-    resize(*maxPageSizeIter);
+    const auto maxPageSizeWidest = maxPageSizeIter->width() > maxPageSizeIter->height() ? maxPageSizeIter->width() : maxPageSizeIter->height();
+    const QSize newWizardSize(maxPageSizeWidest, maxPageSizeWidest);
+    resize(newWizardSize);
 }
 
 void OwncloudWizard::setAccount(AccountPtr account)
@@ -255,19 +257,12 @@ void OwncloudWizard::slotCurrentPageChanged(int id)
     if (id == WizardCommon::Page_Welcome) {
         // Hide all buttons on welcome page
         setButtonLayout({});
-    } else if (id == WizardCommon::Page_WebView) {
+    } else if (id == WizardCommon::Page_WebView || id == WizardCommon::Page_Flow2AuthCreds) {
         setButtonLayout({ QWizard::Stretch, QWizard::BackButton });
+    } else if (id == WizardCommon::Page_AdvancedSetup) {
+        setButtonLayout({ QWizard::Stretch, QWizard::CustomButton1, QWizard::BackButton, QWizard::NextButton });
     } else {
-        // Otherwise show back and next button
-        QList<QWizard::WizardButton> buttonLayout;
-        buttonLayout << QWizard::Stretch;
-
-        if (id == WizardCommon::Page_AdvancedSetup) {
-            buttonLayout << QWizard::CustomButton1;
-        }
-
-        buttonLayout << QWizard::BackButton << QWizard::NextButton;
-        setButtonLayout(buttonLayout);
+        setButtonLayout({ QWizard::Stretch, QWizard::BackButton, QWizard::NextButton });
     }
 
     if (id == WizardCommon::Page_ServerSetup) {

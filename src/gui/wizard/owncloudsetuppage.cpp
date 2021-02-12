@@ -58,6 +58,10 @@ OwncloudSetupPage::OwncloudSetupPage(QWidget *parent)
 
     registerField(QLatin1String("OCUrl*"), _ui.leUrl);
 
+    auto sizePolicy = _progressIndi->sizePolicy();
+    sizePolicy.setRetainSizeWhenHidden(true);
+    _progressIndi->setSizePolicy(sizePolicy);
+
     _ui.progressLayout->addWidget(_progressIndi);
     stopSpinner();
 

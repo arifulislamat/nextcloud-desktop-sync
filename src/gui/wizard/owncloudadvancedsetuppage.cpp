@@ -49,6 +49,10 @@ OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage(OwncloudWizard *wizard)
 
     registerField(QLatin1String("OCSyncFromScratch"), _ui.cbSyncFromScratch);
 
+    auto sizePolicy = _progressIndi->sizePolicy();
+    sizePolicy.setRetainSizeWhenHidden(true);
+    _progressIndi->setSizePolicy(sizePolicy);
+
     _ui.resultLayout->addWidget(_progressIndi);
     stopSpinner();
     setupCustomization();

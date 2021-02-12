@@ -130,18 +130,34 @@ namespace WizardCommon {
 
     void customizeSecondaryButtonStyle(QAbstractButton *button)
     {
-        auto pushButtonPalette = button->palette();
-        pushButtonPalette.setColor(QPalette::Button, Theme::instance()->applicationBackgroundColor());
-        pushButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->applicationTitleColor());
-        button->setPalette(pushButtonPalette);
+        const auto theme = Theme::instance();
+
+        // FIXME: For whatever reason I got crashes if i concat the string directly with +
+        QString buttonStyleSheet;
+        buttonStyleSheet += "QPushButton {background-color: ";
+        buttonStyleSheet += theme->applicationBackgroundColor().name(QColor::HexRgb);
+        buttonStyleSheet += "; color: ";
+        buttonStyleSheet += theme->applicationTitleColor().name(QColor::HexRgb);
+        buttonStyleSheet += " }";
+
+        // Use stylsheets as consistent push button styling across platforms is not possible with palette
+        button->setStyleSheet(buttonStyleSheet);
     }
 
     void customizePrimaryButtonStyle(QAbstractButton *button)
     {
-        auto pushButtonPalette = button->palette();
-        pushButtonPalette.setColor(QPalette::Button, Theme::instance()->applicationTitleColor());
-        pushButtonPalette.setColor(QPalette::ButtonText, Theme::instance()->applicationBackgroundColor());
-        button->setPalette(pushButtonPalette);
+        const auto theme = Theme::instance();
+
+        // FIXME: For whatever reason I got crashes if i concat the string directly with +
+        QString buttonStyleSheet;
+        buttonStyleSheet += "QPushButton {color: ";
+        buttonStyleSheet += theme->applicationBackgroundColor().name(QColor::HexRgb);
+        buttonStyleSheet += "; background-color: ";
+        buttonStyleSheet += theme->applicationTitleColor().name(QColor::HexRgb);
+        buttonStyleSheet += " }";
+
+        // Use stylsheets as consistent push button styling across platforms is not possible with palette
+        button->setStyleSheet(buttonStyleSheet);
     }
 
     void customizeHintLabel(QLabel *label)

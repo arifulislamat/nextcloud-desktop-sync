@@ -38,7 +38,11 @@ Flow2AuthWidget::Flow2AuthWidget(QWidget *parent)
     connect(_ui.openLinkButton, &QPushButton::clicked, this, &Flow2AuthWidget::slotOpenBrowser);
     connect(_ui.copyLinkButton, &QPushButton::clicked, this, &Flow2AuthWidget::slotCopyLinkToClipboard);
 
-    _ui.horizontalLayout->addWidget(_progressIndi);
+    auto sizePolicy = _progressIndi->sizePolicy();
+    sizePolicy.setRetainSizeWhenHidden(true);
+    _progressIndi->setSizePolicy(sizePolicy);
+
+    _ui.progressLayout->addWidget(_progressIndi);
     stopSpinner(false);
 }
 
@@ -165,7 +169,7 @@ void Flow2AuthWidget::slotStatusChanged(Flow2Auth::PollStatus status, int second
 
 void Flow2AuthWidget::startSpinner()
 {
-    _ui.horizontalLayout->setEnabled(true);
+    _ui.progressLayout->setEnabled(true);
     _ui.statusLabel->setVisible(true);
     _progressIndi->setVisible(true);
     _progressIndi->startAnimation();
@@ -176,7 +180,7 @@ void Flow2AuthWidget::startSpinner()
 
 void Flow2AuthWidget::stopSpinner(bool showStatusLabel)
 {
-    _ui.horizontalLayout->setEnabled(false);
+    _ui.progressLayout->setEnabled(false);
     _ui.statusLabel->setVisible(showStatusLabel);
     _progressIndi->setVisible(false);
     _progressIndi->stopAnimation();
