@@ -565,12 +565,7 @@ QPixmap Theme::wizardApplicationLogo(const QColor &backgroundColor) const
     const auto useSvg = shouldPreferSvg();
     const auto logoBasePath = QStringLiteral(":/client/theme/colored/wizard_logo");
     if (useSvg) {
-        auto maxHeight = 0;
-        if (Theme::isHidpi()) {
-            maxHeight = 200;
-        } else {
-            maxHeight = 100;
-        }
+        const auto maxHeight = Theme::isHidpi() ? 200 : 100;
         const auto maxWidth = 2 * maxHeight;
         const auto icon = QIcon(logoBasePath + ".svg");
         const auto size = icon.actualSize(QSize(maxWidth, maxHeight));
@@ -579,12 +574,7 @@ QPixmap Theme::wizardApplicationLogo(const QColor &backgroundColor) const
         return QPixmap(hidpiFileName(logoBasePath + ".png"));
     }
 #else
-    auto size = 0;
-    if (Theme::isHidpi()) {
-        size = 200;
-    } else {
-        size = 100;
-    }
+    const auto size = Theme::isHidpi() ?: 200 : 100;
     return applicationIcon().pixmap(size);
 #endif
 }

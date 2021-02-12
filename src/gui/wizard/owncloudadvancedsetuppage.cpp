@@ -68,11 +68,9 @@ OwncloudAdvancedSetupPage::OwncloudAdvancedSetupPage(OwncloudWizard *wizard)
     connect(_ui.bSelectiveSync, &QAbstractButton::clicked, this, &OwncloudAdvancedSetupPage::slotSelectiveSyncClicked);
 
     const auto theme = Theme::instance();
-    QIcon appIcon = theme->applicationIcon();
-    int appIconSize = 64;
-    if (Theme::isHidpi()) {
-        appIconSize *= 2;
-    }
+    const auto appIcon = theme->applicationIcon();
+    const auto appIconSize = Theme::isHidpi() ? 128 : 64;
+
     _ui.lServerIcon->setPixmap(appIcon.pixmap(appIconSize));
 
     if (theme->wizardHideExternalStorageConfirmationCheckbox()) {
@@ -229,16 +227,13 @@ void OwncloudAdvancedSetupPage::fetchUserData()
     _ui.userNameLabel->setText(userName);
 }
 
-void OwncloudAdvancedSetupPage::setServerAddressLabelUrl(const QString &url)
+void OwncloudAdvancedSetupPage::setServerAddressLabelUrl(const QUrl &url)
 {
-    auto prettyUrl = url;
+    if (!url.isValid()) {
+        return;
+    }
 
-    const QString httpsPrefix("https://");
-    prettyUrl.replace(url.indexOf(httpsPrefix), httpsPrefix.size(), "");
-
-    const QString httpPrefix("http://");
-    prettyUrl.replace(url.indexOf(httpPrefix), httpPrefix.size(), "");
-
+    const auto prettyUrl = url.toString().mid(url.scheme().size() + 3); // + 3 because we need to remove ://
     _ui.serverAddressLabel->setText(prettyUrl);
 }
 
@@ -435,10 +430,15 @@ void OwncloudAdvancedSetupPage::slotSelectFolder()
 
 void OwncloudAdvancedSetupPage::setLocalFolderPushButtonPath(const QString &path)
 {
-    auto prettyPath = path;
+    const auto homeDir = QDir::homePath().endsWith('/') ? QDir::homePath() : QDir::homePath() + QLatin1String("/");
 
-    const QString homeDir = QDir::homePath() + QString("/");
-    prettyPath.replace(prettyPath.indexOf(homeDir), homeDir.size(), "");
+    if (!path.startsWith(homeDir)) {
+        _ui.pbSelectLocalFolder->setText(QDir::toNativeSeparators(path));
+        return;
+    }
+
+    auto prettyPath = path;
+    prettyPath.remove(0, homeDir.size());
 
     _ui.pbSelectLocalFolder->setText(QDir::toNativeSeparators(prettyPath));
 }

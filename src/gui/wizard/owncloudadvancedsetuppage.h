@@ -74,7 +74,7 @@ private:
     qint64 availableLocalSpace() const;
     QString checkLocalSpace(qint64 remoteSize) const;
     void customizeStyle();
-    void setServerAddressLabelUrl(const QString &url);
+    void setServerAddressLabelUrl(const QUrl &url);
     void setLocalFolderPushButtonPath(const QString &path);
     void styleSyncLogo();
     void styleLocalFolderLabel();
